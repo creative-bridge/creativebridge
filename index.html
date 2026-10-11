@@ -396,6 +396,54 @@ h1,h2,h3,h4,.logo,.skill-panel-title{font-family:'Space Grotesk','DM Sans',sans-
 @media(prefers-reduced-motion:reduce){#landingServices .skill-tile,#landingServices .skill-art:before,#landingServices .skill-explore span{transition:none}}
 
 </style>
+
+<style id="creativebridge-gemini-chat-interface">
+/* A focused, Gemini-like conversational workspace. The public site and dashboards remain unchanged. */
+#appContent:has(.cb-ai-workspace){padding:0;max-width:none;min-height:calc(100vh - 72px);}
+.cb-ai-workspace{--cb-chat-border:var(--line);max-width:1060px;min-height:calc(100vh - 72px);margin:0 auto;padding:0 clamp(16px,3vw,38px);display:flex;flex-direction:column;background:transparent;}
+.cb-ai-chat-header{display:flex;align-items:center;gap:12px;min-height:68px;border-bottom:1px solid var(--line);flex-shrink:0;}
+.cb-ai-brandmark{height:36px;width:36px;display:grid;place-items:center;border-radius:11px;background:var(--maroon);color:var(--paper);font-size:21px;}
+.cb-ai-chat-heading{min-width:0;flex:1;}
+.cb-ai-chat-heading h1{margin:0;font-size:15px;font-weight:750;letter-spacing:-.025em;color:var(--ink);}
+.cb-ai-chat-heading p{margin:2px 0 0;color:var(--muted);font-size:11px;}
+.cb-ai-new-chat{border-radius:999px;padding:8px 12px;}
+.cb-ai-chat-main{display:flex;flex:1;min-height:390px;min-width:0;}
+.cb-ai-transcript{display:flex;flex-direction:column;gap:18px;flex:1;min-height:390px;max-height:none;overflow-y:auto;background:transparent;padding:26px 5px 24px;scroll-behavior:smooth;}
+.cb-ai-welcome{width:min(100%,700px);margin:auto;text-align:center;padding:34px 0 28px;}
+.cb-ai-welcome-mark{width:44px;height:44px;display:grid;place-items:center;margin:0 auto 20px;border:1px solid #c9b1b5;background:var(--paper2);border-radius:15px;color:var(--maroon);font-size:23px;}
+.cb-ai-greeting{font-size:13px;font-weight:700;color:var(--maroon);margin:0 0 9px;}
+.cb-ai-welcome h2{font-size:clamp(29px,4.2vw,43px);letter-spacing:-.055em;line-height:1.08;margin:0;color:var(--ink);font-weight:750;}
+.cb-ai-welcome-copy{max-width:490px;margin:12px auto 25px;font-size:13px;line-height:1.7;color:var(--muted);}
+.cb-ai-starters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;max-width:630px;margin:0 auto;text-align:left;}
+.cb-ai-starter{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:54px;padding:13px 15px;border:1px solid var(--line);border-radius:13px;background:var(--paper);color:var(--ink);font-size:12px;font-weight:650;text-align:left;transition:background .16s,border-color .16s,transform .16s;}
+.cb-ai-starter b{font-size:17px;font-weight:500;color:var(--maroon);transition:transform .16s;}
+.cb-ai-starter:hover{background:#f1e6da;border-color:#c9b1b5;transform:translateY(-1px);}
+.cb-ai-starter:hover b{transform:translate(2px,-2px);}
+.cb-ai-starter:focus-visible,.cb-ai-new-chat:focus-visible,.cb-ai-send:focus-visible{outline:2px solid var(--maroon);outline-offset:3px;}
+.cb-ai-composer{position:sticky;bottom:0;width:100%;padding:12px 0 16px;background:linear-gradient(180deg,rgba(247,241,232,0),var(--cream) 18%);flex-shrink:0;}
+.cb-ai-composer-box{display:flex;align-items:flex-end;gap:10px;padding:12px 12px 12px 17px;background:var(--paper);border:1px solid #c9b1b5;border-radius:19px;box-shadow:0 4px 18px rgba(58,30,28,.035);transition:border-color .15s,box-shadow .15s;}
+.cb-ai-composer-box:focus-within{border-color:var(--maroon);box-shadow:0 0 0 3px rgba(116,31,50,.07);}
+.cb-ai-composer-box textarea{display:block;flex:1;min-width:0;min-height:29px;max-height:180px;resize:none;border:0;outline:0;background:transparent;padding:4px 0 2px;color:var(--ink);font:inherit;font-size:14px;line-height:1.55;}
+.cb-ai-composer-box textarea::placeholder{color:#948580;}
+.cb-ai-send{height:38px;width:38px;flex:0 0 38px;display:grid;place-items:center;border:0;border-radius:12px;background:var(--maroon);color:#fffdf9;font-size:23px;line-height:1;transition:background .15s,transform .15s;}
+.cb-ai-send:hover{background:var(--maroon2);transform:translateY(-1px);}
+.cb-ai-send:disabled{opacity:.65;cursor:wait;transform:none;}
+.cb-ai-composer-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:8px 7px 0;color:var(--muted);font-size:10px;}
+.cb-ai-transcript .ai-chat-bubble{max-width:min(760px,88%);padding:14px 16px;border-radius:16px;font-size:13px;line-height:1.75;}
+.cb-ai-transcript .ai-chat-bubble.user{background:var(--maroon);color:#fffdf9;border-bottom-right-radius:5px;}
+.cb-ai-transcript .ai-chat-bubble.assistant{background:var(--paper);border:1px solid var(--line);color:var(--ink);border-bottom-left-radius:5px;}
+.cb-ai-transcript .ai-chat-bubble.cb-ai-error{border-color:#b87983;background:#f7e9eb;color:#5d1728;}
+.cb-ai-transcript .ai-chat-meta{font-size:10px;letter-spacing:.06em;margin-bottom:6px;opacity:.7;}
+.cb-ai-message-text{overflow-wrap:anywhere;}
+.cb-ai-thinking-dots{display:flex;gap:5px;padding:6px 0 2px;}
+.cb-ai-thinking-dots i{width:6px;height:6px;border-radius:50%;background:#8b5062;animation:cbAiDot 1s infinite ease-in-out;}
+.cb-ai-thinking-dots i:nth-child(2){animation-delay:.14s}.cb-ai-thinking-dots i:nth-child(3){animation-delay:.28s}
+@keyframes cbAiDot{0%,80%,100%{opacity:.3;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+@media(max-width:700px){#appContent:has(.cb-ai-workspace){min-height:calc(100vh - 64px)}.cb-ai-workspace{min-height:calc(100vh - 64px);padding:0 13px}.cb-ai-chat-header{min-height:61px}.cb-ai-chat-main,.cb-ai-transcript{min-height:360px}.cb-ai-transcript{padding:18px 0}.cb-ai-welcome{padding:24px 0}.cb-ai-welcome h2{font-size:31px}.cb-ai-welcome-copy{font-size:12px;margin-bottom:20px}.cb-ai-starters{gap:7px}.cb-ai-starter{font-size:11px;padding:11px;min-height:58px}.cb-ai-composer-foot{font-size:9px}.cb-ai-transcript .ai-chat-bubble{max-width:95%;}}
+@media(max-width:430px){.cb-ai-starters{grid-template-columns:1fr}.cb-ai-starter{min-height:46px}.cb-ai-new-chat{font-size:11px;padding:7px 9px}.cb-ai-composer-box{padding:9px 9px 9px 12px;border-radius:15px}.cb-ai-send{width:35px;height:35px;flex-basis:35px}}
+@media(prefers-reduced-motion:reduce){.cb-ai-starter,.cb-ai-starter b,.cb-ai-send{transition:none}.cb-ai-thinking-dots i{animation:none;opacity:.7}}
+</style>
+
 </head>
 <body class="cb-loading">
 <div id="cbSplash" class="cb-splash" role="status" aria-live="polite" aria-label="Loading CreativeBridge">
@@ -676,20 +724,73 @@ function ensureAiWorkspaceHistory(){
  try{const parsed=JSON.parse(sessionStorage.getItem(key)||'[]');if(Array.isArray(parsed))aiWorkspaceHistory=parsed.filter(x=>x&&['user','assistant'].includes(x.role)&&typeof x.text==='string').slice(-16)}catch(e){}
 }
 function persistAiWorkspaceHistory(){try{sessionStorage.setItem(aiWorkspaceHistoryKey,JSON.stringify(aiWorkspaceHistory.slice(-16)))}catch(e){}}
+function aiWorkspaceStarters(role){
+ const starters={
+  brand:[
+   {label:'Find the right creative',task:'general_help',prompt:'Help me find the right creative for a project. Ask me about the work, skills, references, budget and deadline before suggesting next steps.'},
+   {label:'Write a project brief',task:'improve_brief',prompt:'Help me write a clear creative project brief. Start by asking me the essential questions about goals, deliverables, references, budget and deadline.'},
+   {label:'Check my budget',task:'scope_review',prompt:'Help me judge whether my planned budget and deadline are realistic for the work I need. Ask me about the deliverables and revisions first.'},
+   {label:'Plan a campaign',task:'campaign_plan',prompt:'Help me plan a creative campaign from the goal and audience through deliverables, creative roles and timeline. Ask me what you need to know.'}
+  ],
+  creative:[
+   {label:'Find relevant projects',task:'general_help',prompt:'Help me discover suitable open projects on CreativeBridge based on my skills, portfolio and availability. Ask me about my preferences if needed, and only refer to project information available in my workspace context.'},
+   {label:'Improve my portfolio',task:'portfolio_review',prompt:'Help me make my profile and portfolio more compelling to suitable clients. Use my saved profile context where available, and ask what is missing.'},
+   {label:'Price my work fairly',task:'pricing_guidance',prompt:'Help me estimate a fair price for a creative project. Ask about deliverables, workload, revisions, deadline and my experience before suggesting a range.'},
+   {label:'Draft an application',task:'proposal_writer',prompt:'Help me write a concise, honest application for a CreativeBridge project. Ask me for the project brief and relevant experience first.'}
+  ],
+  admin:[
+   {label:'Review bottlenecks',task:'operations_insights',prompt:'Help me identify possible bottlenecks in CreativeBridge operations using only the data available in my workspace. Explain what additional data would help.'},
+   {label:'Improve matching',task:'matching_advice',prompt:'Help me improve how CreativeBridge matches project briefs with creatives, balancing skill, portfolio relevance, availability and fair pricing.'},
+   {label:'Draft platform guidance',task:'policy_copy',prompt:'Help me write clear, fair guidance for brands and creatives about project scope, deliverables, revisions and communication.'},
+   {label:'Review pricing',task:'general_help',prompt:'Help me review CreativeBridge pricing assumptions and identify which assumptions need validation before launch.'}
+  ]
+ };
+ return starters[role]||starters.creative;
+}
 function workspaceAssistantMarkup(role){
  ensureAiWorkspaceHistory();
- const tasks=AI_WORKSPACE_TASKS[role]||AI_WORKSPACE_TASKS.creative;
- const defaultTask=role==='creative'?'find_projects':tasks[0].id;
- aiWorkspaceTask=tasks.some(t=>t.id===aiWorkspaceTask)?aiWorkspaceTask:defaultTask;
- const active=tasks.find(t=>t.id===aiWorkspaceTask)||tasks[0];
- const roleLabel=role==='brand'?'Business AI assistant':role==='creative'?'Creative AI assistant':'Admin AI assistant';
- const subtitle=role==='brand'?'Use Gemini to plan projects, strengthen briefs and think through scope and pricing.':role==='creative'?'Get help finding relevant work, improving your profile and preparing stronger applications.':'Use Gemini to review operational patterns, improve matching and prepare clearer platform guidance.';
- return `<section class="ai-workspace-wrap" style="margin-top:${role==='brand'?'28px':'0'}"><div class="ai-workspace-top"><div class="ai-workspace-banner"><span class="gemini-label"><span class="gemini-label-mark">✦</span> PERSONAL AI WORKSPACE · GOOGLE GEMINI</span><h2>Your creative co-pilot. <em>Available in every workspace.</em></h2><p>${esc(subtitle)} Ask follow-up questions, switch tasks whenever you need, and use the advice to make your next decision. The assistant does not replace your judgement.</p><div class="ai-search-pills"><span>Role-aware help</span><span>Follow-up questions</span><span>Real workspace context</span></div></div><aside class="ai-workspace-side"><div><div class="eyebrow">Current workspace</div><h3 style="margin-top:8px">${esc(roleLabel)}</h3><p style="margin-top:8px">${role==='brand'?'Alongside creative search, use the assistant to make better briefs and clearer decisions.':role==='creative'?'Your AI can help you discover public projects and improve the way you present your skills.':'Use AI as a support tool for your operational decisions. It does not perform assignments or make hiring decisions automatically.'}</p></div><div class="chat-note">Only use information you are comfortable sending for AI processing. Never enter passwords, payment credentials or confidential client material you are not authorised to share.</div></aside></div><section class="panel" style="padding:19px"><div class="panel-head"><div><h2>What do you need help with?</h2><p>Select a starting point. You can switch at any time.</p></div><span class="tag">✦ Gemini</span></div><div class="ai-workspace-task-grid" id="aiTaskGrid">${tasks.map(t=>`<button type="button" data-ai-task="${t.id}" class="ai-task-card ${t.id===aiWorkspaceTask?'active':''}" onclick="selectAiWorkspaceTask('${t.id}')"><span class="ai-task-icon">${t.icon}</span><b>${esc(t.title)}</b><small>${esc(t.description)}</small></button>`).join('')}</div></section><section class="panel ai-workspace-chat"><div class="ai-workspace-chat-head"><div><h3 id="aiWorkspaceCurrentTitle">${esc(active.title)}</h3><p id="aiWorkspaceCurrentDescription">${esc(active.description)}</p></div><button class="btn btn-light btn-sm" type="button" onclick="clearAiWorkspaceChat()">Clear chat</button></div><div class="ai-transcript" id="aiWorkspaceTranscript">${renderAiWorkspaceHistoryHtml()}</div><div id="aiWorkspaceProjectResults"></div><form class="ai-workspace-form" onsubmit="submitAiWorkspaceQuestion(event)"><div class="ai-workspace-input-row"><textarea id="aiWorkspaceInput" required minlength="3" maxlength="2500" placeholder="${esc(active.placeholder)}"></textarea><button class="btn btn-primary" id="aiWorkspaceSendBtn" type="submit"><span>✦</span> Ask Gemini</button></div><div class="ai-workspace-form-foot"><span>Gemini may be inaccurate. Verify important details and final project terms.</span><span id="aiWorkspaceUsageNote">Your account uses the platform's AI allowance.</span></div></form></section></section>`;
+ aiWorkspaceTask='general_help';
+ const roleLabel=role==='brand'?'Business workspace':role==='creative'?'Creative workspace':'Admin workspace';
+ return `<section class="cb-ai-workspace" aria-label="CreativeBridge AI chat">
+  <header class="cb-ai-chat-header">
+   <div class="cb-ai-brandmark" aria-hidden="true">✦</div>
+   <div class="cb-ai-chat-heading"><h1>CreativeBridge AI</h1><p>Gemini · ${esc(roleLabel)}</p></div>
+   <button class="btn btn-light btn-sm cb-ai-new-chat" type="button" onclick="clearAiWorkspaceChat()">＋ New chat</button>
+  </header>
+  <div class="cb-ai-chat-main">
+   <div class="ai-transcript cb-ai-transcript" id="aiWorkspaceTranscript" role="log" aria-live="polite">${renderAiWorkspaceHistoryHtml()}</div>
+   <div id="aiWorkspaceProjectResults" hidden></div>
+  </div>
+  <form class="cb-ai-composer" onsubmit="submitAiWorkspaceQuestion(event)">
+   <div class="cb-ai-composer-box">
+    <textarea id="aiWorkspaceInput" required minlength="3" maxlength="2500" rows="1" aria-label="Message CreativeBridge AI" placeholder="Ask anything about your creative work…" oninput="autoGrowAiWorkspaceInput(this)" onkeydown="handleAiWorkspaceKeydown(event)"></textarea>
+    <button class="cb-ai-send" id="aiWorkspaceSendBtn" type="submit" aria-label="Send message" title="Send message"><span>↑</span></button>
+   </div>
+   <div class="cb-ai-composer-foot"><span>Enter to send · Shift + Enter for a new line</span><span>Gemini can make mistakes. Check important details.</span></div>
+  </form>
+ </section>`;
 }
 function renderAiWorkspaceHistoryHtml(){
- if(!aiWorkspaceHistory.length)return `<div class="ai-chat-bubble assistant"><div class="ai-chat-meta">CreativeBridge AI · Gemini</div>Hi ${esc(curUser()?.name?.split(' ')[0]||'there')}! Tell me what you're trying to do. You can ask follow-up questions, change the task above, or start a new topic whenever you need.</div>`;
- return aiWorkspaceHistory.slice(-16).map(m=>`<div class="ai-chat-bubble ${m.role==='user'?'user':'assistant'}"><div class="ai-chat-meta">${m.role==='user'?'You':'CreativeBridge AI · Gemini'}</div>${esc(m.text).replace(/\n/g,'<br>')}</div>`).join('');
+ if(!aiWorkspaceHistory.length){
+  const role=state.role||'creative';
+  const firstName=esc(curUser()?.name?.split(' ')[0]||'there');
+  const roleLine=role==='brand'?'I can help you shape project briefs, think through budgets and find the right creative direction.':role==='creative'?'I can help you explore opportunities, improve your portfolio and think through client work.':'I can help you review workflows, matching practices and platform decisions.';
+  const starters=aiWorkspaceStarters(role);
+  return `<div class="cb-ai-welcome"><div class="cb-ai-welcome-mark" aria-hidden="true">✦</div><p class="cb-ai-greeting">Hi ${firstName}</p><h2>What can I help you with?</h2><p class="cb-ai-welcome-copy">${esc(roleLine)}</p><div class="cb-ai-starters" aria-label="Suggested prompts">${starters.map(s=>`<button type="button" class="cb-ai-starter" data-prompt="${esc(s.prompt)}" data-task="${esc(s.task)}" onclick="useAiWorkspaceStarter(this)"><span>${esc(s.label)}</span><b aria-hidden="true">↗</b></button>`).join('')}</div></div>`;
+ }
+ return aiWorkspaceHistory.slice(-16).map(m=>`<div class="ai-chat-bubble ${m.role==='user'?'user':'assistant'} ${m.kind==='error'?'cb-ai-error':''}"><div class="ai-chat-meta">${m.role==='user'?'You':'CreativeBridge AI'}</div><div class="cb-ai-message-text">${esc(m.text).replace(/\n/g,'<br>')}</div></div>`).join('');
 }
+function useAiWorkspaceStarter(button){
+ const prompt=button?.dataset?.prompt||'';
+ if(!prompt)return;
+ aiWorkspaceTask='general_help';
+ const input=document.getElementById('aiWorkspaceInput');
+ if(input){input.value=prompt;autoGrowAiWorkspaceInput(input);input.focus();try{input.setSelectionRange(input.value.length,input.value.length)}catch(e){}}
+}
+function autoGrowAiWorkspaceInput(input){if(!input)return;input.style.height='auto';input.style.height=Math.min(input.scrollHeight,180)+'px'}
+function handleAiWorkspaceKeydown(event){if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing){event.preventDefault();event.target.form?.requestSubmit()}}
+function showAiWorkspaceThinking(){const t=document.getElementById('aiWorkspaceTranscript');if(!t)return;const el=document.createElement('div');el.className='ai-chat-bubble assistant cb-ai-thinking';el.id='cbAiThinking';el.innerHTML='<div class="ai-chat-meta">CreativeBridge AI</div><span class="cb-ai-thinking-dots"><i></i><i></i><i></i></span>';t.appendChild(el);t.scrollTop=t.scrollHeight}
+
 function selectAiWorkspaceTask(id){
  const tasks=AI_WORKSPACE_TASKS[state.role]||[];const task=tasks.find(t=>t.id===id);if(!task)return;
  aiWorkspaceTask=id;const hidden=document.getElementById('aiWorkspaceTask');if(hidden)hidden.value=id;
@@ -698,28 +799,34 @@ function selectAiWorkspaceTask(id){
  if(title)title.textContent=task.title;if(desc)desc.textContent=task.description;if(input){input.placeholder=task.placeholder;input.focus()}
  const results=document.getElementById('aiWorkspaceProjectResults');if(results)results.innerHTML='';
 }
-function clearAiWorkspaceChat(){aiWorkspaceHistory=[];persistAiWorkspaceHistory();const t=document.getElementById('aiWorkspaceTranscript');if(t)t.innerHTML=renderAiWorkspaceHistoryHtml();const r=document.getElementById('aiWorkspaceProjectResults');if(r)r.innerHTML=''}
-function appendAiWorkspaceMessage(role,text){aiWorkspaceHistory.push({role,text:String(text||'').slice(0,8000),at:new Date().toISOString()});aiWorkspaceHistory=aiWorkspaceHistory.slice(-16);persistAiWorkspaceHistory();const t=document.getElementById('aiWorkspaceTranscript');if(t){t.innerHTML=renderAiWorkspaceHistoryHtml();t.scrollTop=t.scrollHeight}}
+function clearAiWorkspaceChat(){aiWorkspaceHistory=[];aiWorkspaceTask='general_help';persistAiWorkspaceHistory();const t=document.getElementById('aiWorkspaceTranscript');if(t)t.innerHTML=renderAiWorkspaceHistoryHtml();const input=document.getElementById('aiWorkspaceInput');if(input){input.value='';input.style.height='auto';input.focus()}const r=document.getElementById('aiWorkspaceProjectResults');if(r)r.innerHTML=''}
+function appendAiWorkspaceMessage(role,text,kind=''){aiWorkspaceHistory.push({role,text:String(text||'').slice(0,8000),kind,at:new Date().toISOString()});aiWorkspaceHistory=aiWorkspaceHistory.slice(-16);persistAiWorkspaceHistory();const t=document.getElementById('aiWorkspaceTranscript');if(t){t.innerHTML=renderAiWorkspaceHistoryHtml();t.scrollTop=t.scrollHeight}}
 async function submitAiWorkspaceQuestion(e){
- e.preventDefault();const input=document.getElementById('aiWorkspaceInput'),btn=document.getElementById('aiWorkspaceSendBtn'),query=(input?.value||'').trim();
- if(query.length<3){notify('Add a little more detail so Gemini can help.',true);return}
+ e.preventDefault();
+ const input=document.getElementById('aiWorkspaceInput');
+ const btn=document.getElementById('aiWorkspaceSendBtn');
+ const query=(input?.value||'').trim();
+ if(query.length<3){notify('Write a little more so Gemini can help.',true);return}
  if(!cloudConfigured()||!getSupabaseAccessToken()){notify('Please sign in with your real CreativeBridge account to use Gemini.',true);return}
- const role=state.role,task=aiWorkspaceTask||'general_help',action=role==='creative'&&task==='find_projects'?'find_projects':'workspace_assistant';
- appendAiWorkspaceMessage('user',query);if(input)input.value='';if(btn){btn.disabled=true;btn.innerHTML='<span class="ai-spinner"></span> Thinking…'}
- const out=document.getElementById('aiWorkspaceProjectResults');if(out)out.innerHTML=`<div class="ai-workspace-loading"><span class="ai-spinner"></span><span>${action==='find_projects'?'Searching public projects against your profile…':'Gemini is reviewing your question and workspace context…'}</span></div>`;
+ const task='general_help';
+ appendAiWorkspaceMessage('user',query);
+ if(input){input.value='';input.style.height='auto'}
+ if(btn){btn.disabled=true;btn.innerHTML='<span class="ai-spinner"></span>';}
+ showAiWorkspaceThinking();
  try{
   const cfg=window.CREATIVEBRIDGE_CONFIG||{},token=getSupabaseAccessToken();
-  const response=await fetch(cfg.supabaseUrl.replace(/\/$/,'')+'/functions/v1/'+(cfg.functionName||'creative-search'),{method:'POST',headers:{'Content-Type':'application/json','apikey':cfg.supabasePublishableKey,'Authorization':'Bearer '+token},body:JSON.stringify({action,task,query,messages:aiWorkspaceHistory.slice(-10).map(m=>({role:m.role,text:m.text}))})});
-  const payload=await response.json().catch(()=>({}));if(!response.ok)throw new Error(payload.error||payload.message||'Gemini could not complete that request.');
-  if(action==='find_projects'){
-   const results=Array.isArray(payload.results)?payload.results:[];aiWorkspaceLastProjects=results;
-   const summary=results.length?`Gemini found ${results.length} public project(s) that appear relevant. Review each brief and apply only if the scope, budget and deadline work for you.`:'No close project matches were found. Try different skills or broaden your preferences.';
-   appendAiWorkspaceMessage('assistant',summary);renderAiWorkspaceProjectResults(results);
-  }else{
-   const answer=String(payload.answer||'Gemini returned no answer. Please try again.');appendAiWorkspaceMessage('assistant',answer);if(out)out.innerHTML='';
-  }
- }catch(err){if(out)out.innerHTML=`<div class="notice notice-error"><b>AI Workspace couldn't connect.</b><p>${esc(err.message||'Please try again.')}</p><p class="small">Check the deployed creative-search function, Supabase session, Gemini secret and allowed website origin.</p></div>`;}
- finally{if(btn){btn.disabled=false;btn.innerHTML='<span>✦</span> Ask Gemini'}}
+  const response=await fetch(cfg.supabaseUrl.replace(/\/$/,'')+'/functions/v1/'+(cfg.functionName||'creative-search'),{method:'POST',headers:{'Content-Type':'application/json','apikey':cfg.supabasePublishableKey,'Authorization':'Bearer '+token},body:JSON.stringify({action:'workspace_assistant',task,query,messages:aiWorkspaceHistory.slice(-10).map(m=>({role:m.role,text:m.text}))})});
+  const payload=await response.json().catch(()=>({}));
+  if(!response.ok)throw new Error(payload.error||payload.message||`Gemini could not complete that request (HTTP ${response.status}).`);
+  const answer=String(payload.answer||'Gemini returned an empty answer. Please try again.');
+  appendAiWorkspaceMessage('assistant',answer);
+ }catch(err){
+  const message=String(err?.message||'Please try again in a moment.');
+  appendAiWorkspaceMessage('assistant',`I couldn't connect to Gemini just now. ${message}\n\nPlease try again shortly. If this keeps happening, the platform team will need to check the AI service logs.`, 'error');
+ }finally{
+  if(btn){btn.disabled=false;btn.innerHTML='<span aria-hidden="true">↑</span>'}
+  if(input)input.focus();
+ }
 }
 function renderAiWorkspaceProjectResults(results){
  const root=document.getElementById('aiWorkspaceProjectResults');if(!root)return;
@@ -729,14 +836,7 @@ function renderAiWorkspaceProjectResults(results){
 function openAiMatchedProject(id){const p=getProject(id);if(p){closeModal();viewProject(id);return}navigate('browseprojects');setTimeout(()=>{const f=document.getElementById('publicProjectSearch');if(f){f.value=String(id);filterPublicProjects()}},50)}
 
 
-function aiSearchPage(){
- if(state.role==='brand')return brandAiWorkspacePage();
- ensureAiWorkspaceHistory();
- const role=state.role;
- const title=role==='creative'?'Your AI creative co-pilot':role==='admin'?'AI support for your operations':'AI Workspace';
- const desc=role==='creative'?'Find public projects, strengthen your profile, prepare applications and think through your next move.':role==='admin'?'Use AI to analyse workflow challenges, improve matching practices and draft clearer platform guidance.':'Your personal CreativeBridge AI workspace.';
- return `${header(title,desc)}${workspaceAssistantMarkup(role)}`;
-}
+function aiSearchPage(){ensureAiWorkspaceHistory();return workspaceAssistantMarkup(state.role||'creative')}
 
 function useAiExample(btn){const examples={ 'Cinematic product editor':'I need a cinematic video editor for a premium product advertisement. DaVinci Resolve, colour grading, luxury product films and availability this week are important.','Social media designer':'I need a graphic designer for Instagram carousel posts and campaign creatives. They should know Photoshop or Illustrator, show polished social media work, and be available for a small recurring workload.','Short-form scriptwriter':'I need a scriptwriter who can write strong hooks and short-form video scripts for a lifestyle brand, with concise storytelling and experience writing social content.'};document.getElementById('aiCreativeQuery').value=examples[btn.textContent.trim()]||'';document.getElementById('aiCreativeQuery').focus()}
 function getSupabaseAccessToken(){try{if(window.CREATIVEBRIDGE_SUPABASE_SESSION?.access_token)return window.CREATIVEBRIDGE_SUPABASE_SESSION.access_token;for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('sb-')&&k.endsWith('-auth-token')){const v=JSON.parse(localStorage.getItem(k)||'{}');if(v.access_token)return v.access_token}}}catch(e){}return ''}
