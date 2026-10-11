@@ -444,6 +444,29 @@ h1,h2,h3,h4,.logo,.skill-panel-title{font-family:'Space Grotesk','DM Sans',sans-
 @media(prefers-reduced-motion:reduce){.cb-ai-starter,.cb-ai-starter b,.cb-ai-send{transition:none}.cb-ai-thinking-dots i{animation:none;opacity:.7}}
 </style>
 
+<style>
+
+/* Social and phone sign-in additions */
+.auth-provider-stack{display:grid;gap:10px;margin:0 0 2px}
+.auth-provider-button{width:100%;min-height:47px;display:flex;align-items:center;justify-content:center;gap:11px;border:1px solid #e7d9cc;border-radius:11px;background:#fffdf9;color:#282222;font-size:13px;font-weight:750;cursor:pointer;transition:border-color .15s,background .15s,transform .15s}
+.auth-provider-button:hover{border-color:#c9b1b5;background:#fdf8f2;transform:translateY(-1px)}
+.auth-provider-button:disabled{opacity:.65;cursor:wait;transform:none}
+.auth-google-mark{width:19px;height:19px;display:inline-grid;place-items:center;flex:0 0 19px}
+.auth-first-login-role{margin:0!important;padding:12px;border:1px solid #eee4da;border-radius:12px;background:#faf6f0}
+.auth-first-login-role label{display:block!important;margin-bottom:7px}
+.auth-first-login-role select{width:100%;border:1px solid #e7d9cc;color:#282222}
+.auth-first-login-role .help{font-size:10px;line-height:1.5}
+.auth-phone-panel{margin-top:13px;padding:15px;border:1px solid #e7d9cc;border-radius:14px;background:#faf6f0}
+.auth-phone-panel>p{font-size:11px;line-height:1.6;margin:0 0 14px;color:#7b716c}
+.auth-phone-panel form{margin-top:0!important}
+.auth-phone-panel .field{margin-bottom:12px!important}
+.auth-phone-panel .btn{width:100%;justify-content:space-between}
+.auth-phone-secondary{display:block;width:100%;margin-top:10px;background:none;border:0;color:#741f32;font-size:11px;font-weight:750;cursor:pointer;padding:6px}
+.auth-phone-hint{font-size:10px;line-height:1.55;color:#7b716c;margin-top:6px;display:block}
+.auth-card .auth-divider{margin:18px 0}
+@media(max-width:760px){.auth-phone-panel{padding:12px}.auth-first-login-role{padding:10px}}
+
+</style>
 </head>
 <body class="cb-loading">
 <div id="cbSplash" class="cb-splash" role="status" aria-live="polite" aria-label="Loading CreativeBridge">
@@ -562,7 +585,7 @@ function addDays(n){const d=new Date();d.setDate(d.getDate()+n);return d.toISOSt
 const DATA_KEY='creativebridge_demo_v1';let state={role:'brand',userId:'b1',page:'dashboard',selectedProject:null,selectedCategory:null};
 function seedData(){return{accounts:[],creatives:JSON.parse(JSON.stringify(CREATIVES_SEED)),brands:JSON.parse(JSON.stringify(BRANDS_SEED)),projects:JSON.parse(JSON.stringify(PROJECTS_SEED)),settings:{serviceRate:8,handlingFee:299,matchWeights:{skills:40,experience:25,availability:20,rating:15},complexity:{...COMPLEXITY},experience:{...EXPERIENCE},urgency:{...URGENCY},bases:Object.fromEntries(SERVICES.map(s=>[s.id,s.base]))},activities:[{id:1,at:new Date().toISOString(),text:'CreativeBridge workspace initialized.'}],transactions:[]}}
 function loadData(){try{const d=JSON.parse(localStorage.getItem(DATA_KEY));if(d&&d.projects&&d.creatives&&d.settings){if(!Array.isArray(d.accounts))d.accounts=[];d.projects.forEach(p=>{if(typeof p.publicListing!=='boolean')p.publicListing=true;if(!Array.isArray(p.references))p.references=p.id==='p101'?['https://example.com/reference-moodboard']:[];if(!Array.isArray(p.interestedCreativeIds))p.interestedCreativeIds=p.id==='p101'?['c1','c3']:[];if(!Array.isArray(p.messages))p.messages=[];if(!Array.isArray(p.history))p.history=[]});d.creatives.forEach(c=>{if(!Array.isArray(c.skills))c.skills=[];if(!Array.isArray(c.portfolio))c.portfolio=[]});return d}}catch(e){}const d=seedData();persist(d);return d}let db=loadData();function persist(d=db){localStorage.setItem(DATA_KEY,JSON.stringify(d))}
-let authMode='login',authRole='brand',demoSession=false;const SESSION_KEY='creativebridge_local_session_v1';
+let authMode='login',authRole='brand',demoSession=false,phoneAuthOpen=false,pendingPhoneAuth='';const SESSION_KEY='creativebridge_local_session_v1';
 const catEmoji={'Video Editing':'🎬','Graphic Design':'🎨','Content Writing':'✍️','Motion Graphics':'✦','UI/UX Design':'▦','Creative Strategy':'↗'};
 function money(n){return '₹'+Math.round(Number(n)||0).toLocaleString('en-IN')}function fmtDate(s){if(!s)return '—';const raw=String(s),d=/^\d{4}-\d{2}-\d{2}$/.test(raw)?new Date(raw+'T00:00:00'):new Date(raw);return Number.isNaN(d.getTime())?'—':d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function slugStatus(s){return String(s||'').replace(/[^a-z]/gi,'').toLowerCase()}function statusPill(s){return `<span class="status ${slugStatus(s)}">${esc(s)}</span>`}function getBrand(id){return db.brands.find(x=>x.id===id)}function getCreative(id){return db.creatives.find(x=>x.id===id)}function getProject(id){return db.projects.find(x=>x.id===id)}function curUser(){return state.role==='brand'?getBrand(state.userId):state.role==='creative'?getCreative(state.userId):{id:'admin',name:'CreativeBridge Admin',email:'admin@creativebridge.demo'}}function initials(s){return (s||'CB').split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase()}function addActivity(text){db.activities.unshift({id:Date.now(),at:new Date().toISOString(),text});db.activities=db.activities.slice(0,100);persist()}
 function notify(msg,error=false){const el=document.createElement('div');el.className='toast'+(error?' error':'');el.textContent=msg;document.getElementById('toastWrap').appendChild(el);setTimeout(()=>el.remove(),3500)}
@@ -573,10 +596,81 @@ function showAuth(mode='login',role='brand'){authMode=mode;authRole=role;hideAll
 function openDemo(role){if(cloudConfigured()){notify('Please sign in with your CreativeBridge account.',true);showAuth('login',role==='brand'?'brand':'creative');return}notify('Please sign in with your CreativeBridge account.',true)}
 function enterAccount(role,userId){demoSession=false;try{sessionStorage.setItem(SESSION_KEY,JSON.stringify({role,userId}))}catch(e){}state.role=role;state.userId=userId;state.page='dashboard';hideAllViews();document.getElementById('appShell').classList.remove('hidden');renderApp();window.scrollTo(0,0)}
 async function logout(){const wasDemo=demoSession;demoSession=false;try{sessionStorage.removeItem(SESSION_KEY)}catch(e){}if(cbSupabase&&!wasDemo){try{await cbSupabase.auth.signOut()}catch(e){console.warn('Sign out problem',e)}}window.CREATIVEBRIDGE_SUPABASE_SESSION=null;cbCloudUser=null;goLanding();notify('You have signed out of CreativeBridge.')}
-function setAuthMode(mode){authMode=mode;renderAuth()}
+function setAuthMode(mode){authMode=mode;phoneAuthOpen=false;pendingPhoneAuth='';renderAuth()}
 function toggleSignupRole(role){authRole=role;renderAuth()}
 function toggleAuthRoleFields(){const role=document.getElementById('signupRole')?.value;if(role){authRole=role;document.querySelectorAll('[data-role-fields]').forEach(el=>{const hide=el.dataset.roleFields!==role;el.classList.toggle('hidden',hide);el.hidden=hide;el.querySelectorAll('input,select,textarea').forEach(input=>input.disabled=hide)});const nm=document.getElementById('signupNameLabel');if(nm)nm.textContent=role==='brand'?'Company name':'Full name';const sub=document.getElementById('signupSubcopy');if(sub)sub.textContent=role==='brand'?'Create a workspace for your company.':'Build your creative profile and get discovered for suitable work.'}}
-function renderAuth(){const root=document.getElementById('authView');root.innerHTML=`<div class="auth-page"><nav class="auth-nav"><a href="#" class="logo" onclick="goLanding();return false"><span class="logo-mark"><svg viewBox="0 0 32 32" fill="none"><path d="M4 23V17C4 10.5 9.3 5 16 5s12 5.5 12 12v6M3 23h26M9 23v-4m7 4v-7m7 7v-4" stroke="white" stroke-width="2.8" stroke-linecap="round"/></svg></span><span>Creative<b>Bridge</b></span></a><button class="btn btn-quiet btn-sm" onclick="goLanding()">← Back to website</button></nav><div class="auth-layout"><section class="auth-story"><div class="eyebrow">The right work. The right people.</div><h1>${authMode==='login'?'Good work starts with a connection.':'Make room for better creative work.'}</h1><p>${authMode==='login'?'Sign in to manage projects, meet your creative network and keep every brief moving.':'Join a more organized creative ecosystem — whether you are hiring talent or building your creative career.'}</p><div class="auth-perks"><div><span>01</span><div><b>Skill-first matching</b><small>Projects are routed by fit, not lowest bid.</small></div></div><div><span>02</span><div><b>Transparent pricing</b><small>See how project estimates are calculated.</small></div></div><div><span>03</span><div><b>Independent by design</b><small>Creatives keep the freedom to work elsewhere.</small></div></div></div><div class="auth-story-foot"><span class="auth-orbit">CB</span><span>Creative work, connected.<br><small>Shared brand and creative workspaces</small></span></div></section><section class="auth-form-wrap"><div class="auth-card"><div class="auth-card-top"><span class="tag gray">${authMode==='login'?'WELCOME BACK':'GET STARTED'}</span><span class="small muted">${authMode==='login'?'Account sign-in':'Create your profile'}</span></div><h2>${authMode==='login'?'Sign in to CreativeBridge':'Create your account'}</h2><p class="muted small">${authMode==='login'?'Continue to your personal workspace.':'It only takes a minute to get started.'}</p><div id="authMessage" class="auth-message hidden" role="status"></div>${authMode==='login'?`<form onsubmit="handleAuthSubmit(event)"><div class="field"><label for="authEmail">Email address</label><input id="authEmail" name="email" type="email" autocomplete="email" required placeholder="you@company.com"></div><div class="field"><div class="field-label-row"><label for="authPassword">Password</label><button type="button" onclick="sendPasswordReset()" style="border:0;background:transparent;padding:0;color:var(--maroon);font-size:12px;font-weight:750;cursor:pointer">Forgot password?</button></div><input id="authPassword" name="password" type="password" autocomplete="current-password" required minlength="6" placeholder="Enter your password"></div><button class="btn btn-primary auth-submit">Sign in <span>→</span></button></form><p class="auth-switch">New to CreativeBridge? <button onclick="setAuthMode('signup')">Create an account</button></p>`:`<form onsubmit="handleAuthSubmit(event)"><div class="field"><label for="signupRole">I want to join as</label><select id="signupRole" onchange="toggleAuthRoleFields()"><option value="brand" ${authRole==='brand'?'selected':''}>Brand / Business</option><option value="creative" ${authRole==='creative'?'selected':''}>Creative Freelancer</option></select></div><div class="field"><label id="signupNameLabel" for="signupName">${authRole==='brand'?'Company name':'Full name'}</label><input id="signupName" required maxlength="100" autocomplete="name" placeholder="${authRole==='brand'?'Your company or brand':'Your full name'}"></div><div class="field"><label for="signupEmail">Email address</label><input id="signupEmail" type="email" required autocomplete="email" placeholder="you@example.com"></div><div class="field"><label for="signupPassword">Create password</label><input id="signupPassword" type="password" required minlength="8" autocomplete="new-password" placeholder="At least 8 characters"><span class="help">Your password is handled by Supabase Authentication.</span></div><div class="form-grid"><div class="field" data-role-fields="brand" ${authRole==='creative'?'hidden':''}><label for="signupIndustry">Industry</label><select id="signupIndustry"><option>Media & Entertainment</option><option>Food & Beverage</option><option>Education</option><option>Fashion & Lifestyle</option><option>E-commerce</option><option>Technology</option><option>Other</option></select></div><div class="field" data-role-fields="brand" ${authRole==='creative'?'hidden':''}><label for="signupWebsite">Website <span class="muted">(optional)</span></label><input id="signupWebsite" type="url" placeholder="https://yourbrand.com"></div><div class="field span-2" data-role-fields="creative" ${authRole==='brand'?'hidden':''}><label for="signupHeadline">Professional headline</label><input id="signupHeadline" placeholder="e.g. Video Editor & Motion Designer"></div><div class="field span-2" data-role-fields="creative" ${authRole==='brand'?'hidden':''}><label for="signupSkills">Skills <span class="muted">(comma-separated)</span></label><input id="signupSkills" placeholder="Video Editing, Premiere Pro, Reels"></div></div><button class="btn btn-primary auth-submit">Create account <span>→</span></button></form><p class="auth-switch">Already have an account? <button onclick="setAuthMode('login')">Sign in</button></p>`}<div class="auth-legal">Your account is managed through CreativeBridge's secure sign-in service.</div></div></section></div></div>`}
+function renderAuth(){
+ const root=document.getElementById('authView');
+ root.innerHTML=`<div class="auth-page"><nav class="auth-nav"><a href="#" class="logo" onclick="goLanding();return false"><span class="logo-mark"><svg viewBox="0 0 32 32" fill="none"><path d="M4 23V17C4 10.5 9.3 5 16 5s12 5.5 12 12v6M3 23h26M9 23v-4m7 4v-7m7 7v-4" stroke="white" stroke-width="2.8" stroke-linecap="round"/></svg></span><span>Creative<b>Bridge</b></span></a><button class="btn btn-quiet btn-sm" onclick="goLanding()">← Back to website</button></nav><div class="auth-layout"><section class="auth-story"><div class="eyebrow">The right work. The right people.</div><h1>${authMode==='login'?'Good work starts with a connection.':'Make room for better creative work.'}</h1><p>${authMode==='login'?'Sign in to manage projects, meet your creative network and keep every brief moving.':'Join a more organized creative ecosystem — whether you are hiring talent or building your creative career.'}</p><div class="auth-perks"><div><span>01</span><div><b>Skill-first matching</b><small>Projects are routed by fit, not lowest bid.</small></div></div><div><span>02</span><div><b>Transparent pricing</b><small>See how project estimates are calculated.</small></div></div><div><span>03</span><div><b>Independent by design</b><small>Creatives keep the freedom to work elsewhere.</small></div></div></div><div class="auth-story-foot"><span class="auth-orbit">CB</span><span>Creative work, connected.<br><small>Shared brand and creative workspaces</small></span></div></section><section class="auth-form-wrap"><div class="auth-card"><div class="auth-card-top"><span class="tag gray">${authMode==='login'?'WELCOME BACK':'GET STARTED'}</span><span class="small muted">${authMode==='login'?'Account sign-in':'Create your profile'}</span></div><h2>${authMode==='login'?'Sign in to CreativeBridge':'Create your account'}</h2><p class="muted small">${authMode==='login'?'Continue to your personal workspace.':'It only takes a minute to get started.'}</p><div id="authMessage" class="auth-message hidden" role="status"></div>${authMode==='login'?`<form onsubmit="handleAuthSubmit(event)"><div class="field"><label for="authEmail">Email address</label><input id="authEmail" name="email" type="email" autocomplete="email" required placeholder="you@company.com"></div><div class="field"><div class="field-label-row"><label for="authPassword">Password</label><button type="button" onclick="sendPasswordReset()" style="border:0;background:transparent;padding:0;color:var(--maroon);font-size:12px;font-weight:750;cursor:pointer">Forgot password?</button></div><input id="authPassword" name="password" type="password" autocomplete="current-password" required minlength="6" placeholder="Enter your password"></div><button class="btn btn-primary auth-submit">Sign in <span>→</span></button></form><div class="auth-divider">OR CONTINUE WITH</div><div class="auth-provider-stack"><div class="field auth-first-login-role"><label for="googleSignupRole">Account type for a new Google account</label><select id="googleSignupRole"><option value="brand" ${authRole==='brand'?'selected':''}>Brand / Business</option><option value="creative" ${authRole==='creative'?'selected':''}>Creative Freelancer</option></select><span class="help">Existing accounts keep their saved role. This choice is only used for first-time Google sign-ups.</span></div><button id="googleSignInButton" type="button" class="auth-provider-button" onclick="signInWithGoogle()"><span class="auth-google-mark" aria-hidden="true"><svg viewBox="0 0 48 48" width="19" height="19"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.02 13.22l7.98 6.19C11.89 13.72 17.47 9.5 24 9.5z" transform="translate(0 3)"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6C44.4 37.95 46.98 31.95 46.98 24.55z"/><path fill="#FBBC05" d="M9.99 28.41A14.4 14.4 0 0 1 9.2 24c0-1.53.27-3.01.76-4.41l-7.98-6.19A23.9 23.9 0 0 0 0 24c0 3.86.93 7.5 2.58 10.7l7.41-6.29z" transform="translate(1 0)"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.9-5.8l-7.73-6c-2.14 1.44-4.87 2.3-8.17 2.3-6.53 0-12.11-4.22-14.1-10.09l-7.98 6.19C6.51 42.62 14.62 48 24 48z" transform="translate(0 -2)"/></svg></span>Continue with Google</button><button type="button" class="auth-provider-button" onclick="togglePhoneAuth()"><span aria-hidden="true">▣</span>Continue with phone number</button></div><div id="phoneAuthPanel" class="auth-phone-panel" ${phoneAuthOpen?'':'hidden'}><p>Use your phone number to receive a one-time SMS code. Enter the country code too, for example <b>+91</b> for India. Existing account roles are never changed by this form.</p><form id="phoneOtpRequestForm" onsubmit="sendPhoneOtp(event)"><div class="field"><label for="phoneAuthNumber">Phone number with country code</label><input id="phoneAuthNumber" type="tel" name="phone" inputmode="tel" autocomplete="tel" placeholder="+91 98765 43210" required></div><div class="field"><label for="phoneAuthName">Full name <span class="muted">(for new accounts)</span></label><input id="phoneAuthName" type="text" maxlength="100" autocomplete="name" placeholder="Your name"></div><div class="field"><label for="phoneAuthRole">I want to join as</label><select id="phoneAuthRole"><option value="brand" ${authRole==='brand'?'selected':''}>Brand / Business</option><option value="creative" ${authRole==='creative'?'selected':''}>Creative Freelancer</option></select><span class="auth-phone-hint">This role is used only when the phone number creates a new account.</span></div><button id="phoneOtpSendButton" class="btn btn-primary" type="submit">Send SMS code <span>→</span></button></form><form id="phoneOtpVerifyForm" onsubmit="verifyPhoneOtp(event)" hidden><p id="phoneOtpSentText">Enter the code sent to your phone.</p><div class="field"><label for="phoneAuthOtp">Verification code</label><input id="phoneAuthOtp" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{4,8}" minlength="4" maxlength="8" placeholder="Enter SMS code" required></div><button id="phoneOtpVerifyButton" class="btn btn-primary" type="submit">Verify code and sign in <span>→</span></button><button type="button" class="auth-phone-secondary" onclick="resetPhoneOtp()">Use a different phone number</button></form></div><p class="auth-switch">New to CreativeBridge? <button onclick="setAuthMode('signup')">Create an account</button></p>`:`<form onsubmit="handleAuthSubmit(event)"><div class="field"><label for="signupRole">I want to join as</label><select id="signupRole" onchange="toggleAuthRoleFields()"><option value="brand" ${authRole==='brand'?'selected':''}>Brand / Business</option><option value="creative" ${authRole==='creative'?'selected':''}>Creative Freelancer</option></select></div><div class="field"><label id="signupNameLabel" for="signupName">${authRole==='brand'?'Company name':'Full name'}</label><input id="signupName" required maxlength="100" autocomplete="name" placeholder="${authRole==='brand'?'Your company or brand':'Your full name'}"></div><div class="field"><label for="signupEmail">Email address</label><input id="signupEmail" type="email" required autocomplete="email" placeholder="you@example.com"></div><div class="field"><label for="signupPassword">Create password</label><input id="signupPassword" type="password" required minlength="8" autocomplete="new-password" placeholder="At least 8 characters"><span class="help">Your password is handled by Supabase Authentication.</span></div><div class="form-grid"><div class="field" data-role-fields="brand" ${authRole==='creative'?'hidden':''}><label for="signupIndustry">Industry</label><select id="signupIndustry"><option>Media & Entertainment</option><option>Food & Beverage</option><option>Education</option><option>Fashion & Lifestyle</option><option>E-commerce</option><option>Technology</option><option>Other</option></select></div><div class="field" data-role-fields="brand" ${authRole==='creative'?'hidden':''}><label for="signupWebsite">Website <span class="muted">(optional)</span></label><input id="signupWebsite" type="url" placeholder="https://yourbrand.com"></div><div class="field span-2" data-role-fields="creative" ${authRole==='brand'?'hidden':''}><label for="signupHeadline">Professional headline</label><input id="signupHeadline" placeholder="e.g. Video Editor & Motion Designer"></div><div class="field span-2" data-role-fields="creative" ${authRole==='brand'?'hidden':''}><label for="signupSkills">Skills <span class="muted">(comma-separated)</span></label><input id="signupSkills" placeholder="Video Editing, Premiere Pro, Reels"></div></div><button class="btn btn-primary auth-submit">Create account <span>→</span></button></form><p class="auth-switch">Already have an account? <button onclick="setAuthMode('login')">Sign in</button></p>`}<div class="auth-legal">Your account is managed through CreativeBridge's secure sign-in service.</div></div></section></div></div>`;
+}
+
+function togglePhoneAuth(){phoneAuthOpen=!phoneAuthOpen;pendingPhoneAuth='';renderAuth();}
+function resetPhoneOtp(){pendingPhoneAuth='';phoneAuthOpen=true;renderAuth();}
+async function signInWithGoogle(){
+ if(!cloudConfigured()){setAuthMessage('CreativeBridge sign-in is temporarily unavailable. Please refresh the page and try again.',true);return}
+ const button=document.getElementById('googleSignInButton');
+ const role=document.getElementById('googleSignupRole')?.value==='creative'?'creative':'brand';
+ if(button){button.disabled=true;button.textContent='Connecting to Google…'}
+ try{
+  sessionStorage.setItem('cb_pending_google_role',role);
+  const redirectTo=window.location.origin+window.location.pathname;
+  const {error}=await cbSupabase.auth.signInWithOAuth({provider:'google',options:{redirectTo,queryParams:{prompt:'select_account'}}});
+  if(error)throw error;
+ }catch(error){
+  try{sessionStorage.removeItem('cb_pending_google_role')}catch(_){}
+  console.error('CreativeBridge Google sign-in error',error);
+  setAuthMessage(error?.message||'Could not start Google sign-in. Please try again.',true);
+  if(button){button.disabled=false;button.innerHTML='<span class="auth-google-mark" aria-hidden="true">G</span>Continue with Google'}
+ }
+}
+async function sendPhoneOtp(event){
+ event.preventDefault();
+ const form=event.currentTarget,button=document.getElementById('phoneOtpSendButton');
+ const original=button?.innerHTML||'Send SMS code →';
+ try{
+  if(!cloudConfigured())throw new Error('CreativeBridge sign-in is temporarily unavailable. Please refresh and try again.');
+  let phone=(document.getElementById('phoneAuthNumber')?.value||'').trim().replace(/[\s().-]/g,'');
+  if(!/^\+[1-9]\d{7,14}$/.test(phone))throw new Error('Enter your phone number in international format, including the country code, such as +919876543210.');
+  const displayName=(document.getElementById('phoneAuthName')?.value||'').trim()||'CreativeBridge User';
+  const role=document.getElementById('phoneAuthRole')?.value==='creative'?'creative':'brand';
+  if(button){button.disabled=true;button.textContent='Sending code…'}
+  const {error}=await cbSupabase.auth.signInWithOtp({phone,options:{channel:'sms',shouldCreateUser:true,data:{role,display_name:displayName}}});
+  if(error)throw error;
+  pendingPhoneAuth=phone;
+  form.hidden=true;
+  document.getElementById('phoneOtpVerifyForm').hidden=false;
+  document.getElementById('phoneOtpSentText').textContent='Enter the verification code sent to '+phone+'.';
+  setAuthMessage('SMS code sent. Check your messages and enter the code below.',false);
+  document.getElementById('phoneAuthOtp')?.focus();
+ }catch(error){
+  console.error('CreativeBridge phone OTP request failed',error);
+  setAuthMessage(error?.message||'Could not send the SMS code. Check your number and try again.',true);
+ }finally{if(button&&document.body.contains(button)){button.disabled=false;button.innerHTML=original}}
+}
+async function verifyPhoneOtp(event){
+ event.preventDefault();
+ const button=document.getElementById('phoneOtpVerifyButton');
+ const original=button?.innerHTML||'Verify code and sign in →';
+ try{
+  if(!cloudConfigured())throw new Error('CreativeBridge sign-in is temporarily unavailable. Please refresh and try again.');
+  if(!pendingPhoneAuth)throw new Error('Request a new SMS code first.');
+  const token=(document.getElementById('phoneAuthOtp')?.value||'').trim().replace(/\s/g,'');
+  if(!/^\d{4,8}$/.test(token))throw new Error('Enter the verification code from your SMS.');
+  if(button){button.disabled=true;button.textContent='Verifying…'}
+  const {data,error}=await cbSupabase.auth.verifyOtp({phone:pendingPhoneAuth,token,type:'sms'});
+  if(error)throw error;
+  if(!data?.session||!data?.user)throw new Error('The code was accepted, but no session was returned. Please try again.');
+  window.CREATIVEBRIDGE_SUPABASE_SESSION=data.session;cbCloudUser=data.user;
+  const workspace=await hydrateCloudAccount(data.user);
+  pendingPhoneAuth='';phoneAuthOpen=false;
+  enterAccount(workspace.role,workspace.userId);
+  notify('Welcome to CreativeBridge.');
+ }catch(error){
+  console.error('CreativeBridge phone OTP verification failed',error);
+  setAuthMessage(error?.message||'Could not verify that code. Please try again.',true);
+ }finally{if(button&&document.body.contains(button)){button.disabled=false;button.innerHTML=original}}
+}
+
 async function hashDemoPassword(password){const data=new TextEncoder().encode(password);if(window.crypto&&window.crypto.subtle){const digest=await window.crypto.subtle.digest('SHA-256',data);return 'sha256:'+Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,'0')).join('')}let h=2166136261;for(let i=0;i<password.length;i++){h^=password.charCodeAt(i);h=Math.imul(h,16777619)}return 'demo-hash:'+((h>>>0).toString(16))}
 function setAuthMessage(text,isError=false){const el=document.getElementById('authMessage');if(!el)return;el.textContent=text;el.classList.remove('hidden');el.classList.toggle('error',isError)}
 async function hydrateCloudAccount(authUser){
@@ -925,7 +1019,37 @@ async function restoreCloudSession(){
 // Shared-cloud integration overrides and workspace loading are loaded before session restoration.
 </script>
 <script src="./cloud-backend.js"></script>
-<script>restoreCloudSession();</script>
+<script>
+async function restoreSocialAuthThenWorkspace(){
+ const pendingKey='cb_pending_google_role';
+ let pendingRole='';
+ try{pendingRole=sessionStorage.getItem(pendingKey)||''}catch(_){}
+ if(pendingRole && ['brand','creative'].includes(pendingRole) && cloudConfigured()){
+  let shouldClear=true;
+  try{
+   const {data,error}=await cbSupabase.auth.getSession();
+   if(error)throw error;
+   if(data?.session?.user){
+    const meta=data.session.user.user_metadata||{};
+    const displayName=meta.full_name||meta.name||meta.display_name||meta.given_name||data.session.user.email?.split('@')[0]||'CreativeBridge User';
+    const {error:setupError}=await cbSupabase.rpc('cb_complete_oauth_signup',{p_role:pendingRole,p_display_name:displayName});
+    if(setupError){
+     shouldClear=false;
+     console.error('Google account role setup failed',setupError);
+     notify('Google sign-in succeeded, but account-type setup did not finish. Check the supplied Supabase login setup SQL, then refresh.',true);
+    }
+   }
+  }catch(error){
+   shouldClear=false;
+   console.error('Could not finish Google account setup',error);
+   notify('Google account setup could not finish. Check the Supabase login setup SQL, then refresh.',true);
+  }
+  if(shouldClear){try{sessionStorage.removeItem(pendingKey)}catch(_){}}
+ }
+ await restoreCloudSession();
+}
+restoreSocialAuthThenWorkspace();
+</script>
 <script>
 (function(){
   const started=performance.now();
